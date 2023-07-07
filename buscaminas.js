@@ -393,6 +393,7 @@ function iniciar() {
       botonesPC[x].click();        
     }   */ 
     
+    //AQUÍ VOY: únicamente incluir las celdas que no se han examinado
     // Creates array with cells that need to be examined
     // Ex idCell > 0
     let checkThisCells = [];
@@ -416,7 +417,7 @@ function iniciar() {
       pcStatus.innerHTML = `Analizando (${renglon},${columna}). Tiene ${idCell} minas cerca<br>${pcStatus.innerHTML}`;
 
       // Counts nearby cells
-      let alrededor = cuentaAlrededor(i, j);
+      let alrededor = cuentaAlrededor(renglon, columna);
       if (idCell === (alrededor[0] + alrededor[1]) && alrededor[0] > 0) {
         // All unchecked cells are mines
         // Flag them
@@ -426,8 +427,8 @@ function iniciar() {
       } else if (idCell === alrededor[1] && alrededor[0] > 0) {
         // Flagged cells equal number
         // So all unchecked are safe to click
-        pcStatus.innerHTML = `Celdas seguras alrededor de (${i},${j})<br>${pcStatus.innerHTML}`;
-        alrededor = cuentaAlrededor(i, j, botonesPC, 'unchecked');
+        pcStatus.innerHTML = `Celdas seguras alrededor de (${renglon},${columna})<br>${pcStatus.innerHTML}`;
+        alrededor = cuentaAlrededor(renglon, columna, botonesPC, 'unchecked');
         huboAccion = true;
       } else if (idCell === 1) {
         // Buscar dos celdas "1" juntas
@@ -441,7 +442,7 @@ function iniciar() {
       tiroActual = -1;
       pcStatus.innerHTML = `No hay dónde tirar. Tirando al azar<br>${pcStatus.innerHTML}`;
     }
-    if (tiroActual < tamano**2 - 1) {
+    if (tiroActual < checkThisCells.length - 1) {
       tiroActual++;
     } else {
       tiroActual = 0;
@@ -452,64 +453,10 @@ function iniciar() {
         pcStatus.innerHTML = `No hay dónde tirar. Tirando al azar<br>${pcStatus.innerHTML}`;
       }//**************      
       huboAccion = false;
-    }
-
-
-      // Checks if cell has a number
-      /*let idCell = Number(tablaJuego[i][j]);
-      pcStatus.innerHTML = `Celda (${i},${j}). Tiene ${idCell} minas cerca<br>${pcStatus.innerHTML}`;
-      if (idCell > 0 ) {
-        //console.log('número en ', i, j);
-        // Counts nearby cells
-        let alrededor = cuentaAlrededor(i, j);
-        if (idCell === (alrededor[0] + alrededor[1]) && alrededor[0] > 0) {
-          // All unchecked cells are mines
-          // Flag them
-          cuentaAlrededor(i, j, botonesPC, 'flag');
-          pcStatus.innerHTML = `Minas identificadas alrededor de (${i},${j})<br>${pcStatus.innerHTML}`;
-          huboAccion = true;
-        } else if (idCell === alrededor[1] && alrededor[0] > 0) {
-          // Flagged cells equal number
-          // So all unchecked are safe to click
-          pcStatus.innerHTML = `Celdas seguras alrededor de (${i},${j})<br>${pcStatus.innerHTML}`;
-          alrededor = cuentaAlrededor(i, j, botonesPC, 'unchecked');
-          huboAccion = true;
-        } else if (idCell === 1) {
-          // Buscar dos celdas "1" juntas
-          // Celdas "combinadas"
-          console.log('CELDA COMBINADA');
-        }
-      }
-      // Increase i or j to check next cell
-      if (j < tamano - 1) {
-        j++;
-      } else {
-        j = 0;
-        if (i < tamano - 1) {
-          i++;
-        } else {
-          pcStatus.innerHTML = `Terminé un ciclo<br>${pcStatus.innerHTML}`;
-          if (huboAccion) {
-            i = 0, j = 0;
-            huboAccion = false;
-          } else {
-            // If there was no action, try randomly
-            pcStatus.innerHTML = `No encuentro acción disponible. Tirando al azar<br>${pcStatus.innerHTML}`;
-            botonesPC[azar()].click();
-            i = 0, j = 0, huboAccion = true;
-          }          
-        }
-      }
-    } else {
-      iniciandoJuego = false;
-      // Random shot/test
-      pcStatus.innerHTML = `Iniciando juego. Tirando al azar<br>${pcStatus.innerHTML}`;
-      botonesPC[azar()].click();      
-      //clearInterval(timeOutID);*/
-      
+    }    
 
 
     if (state.status !== 0 ) clearInterval(timeOutID);
-  }, 1000);
+  }, 10);
 
 }
