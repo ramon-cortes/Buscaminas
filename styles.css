@@ -1,0 +1,70 @@
+body {
+  font-family: 'Bahnschrift';
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 25% 1fr;
+}
+
+.parametros-titulo {
+  font-weight: 700;
+}
+
+.tabla-parametros, .tabla-parametros tr, .tabla-parametros td {
+  font-family: 'Bahnschrift';
+  border: 1px solid goldenrod;
+  width: 100%;
+  padding: 1px;
+}
+
+input {
+  width: 60px;
+}
+
+.tabla {
+  border: 1px solid black;
+}
+
+table {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+table, tr, td {
+  font-family: 'consolas';
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 0px;
+}
+
+td {
+  cursor: pointer;
+}
+
+.td-ancho {
+  width: 80px;
+}
+
+.smaller {
+  font-size: 0.75rem;
+}
+
+.img-tablero {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+}
+
+.pc-thinking {
+  color: green;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.right {
+  text-align: right;
+}

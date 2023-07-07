@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Auto-Buscaminas</title>
+</head>
+<body>
+
+  <div class="App">
+    <h3>Auto-Buscaminas Incompleto</h3>
+    <hr />
+    <div class='wrapper'>
+      <!-- Parameters -->
+      <div>
+        <span class='parametros-titulo'>Parámetros</span> 
+        <table class='tabla-parametros tabla-parametros-tabla'>
+          <tbody>
+            <tr>
+              <td>Tamaño</td>
+              <td> 
+                <input id="input-tamano" type="number" />
+              </td>
+            </tr>
+            <tr>
+              <td>Minas: <span id="info-minas"></span></td>
+              <td><button onclick="construye()">Construir</button></td>            
+            </tr>
+            <tr>            
+              <td><button id="boton-probar" disabled="true" onclick="probar()">Probar</button></td>
+              <td><button id="boton-iniciar" disabled="true" onclick="iniciar()" class="td-ancho">Auto-Juego</button></td>
+            </tr>
+            <tr>
+              <td colSpan="2" id="state" class="smaller">Elige tamaño (3-20) y clic en "Construir"</td>
+            </tr>
+            <tr>
+              <td class="smaller" colSpan="2" >
+                <span class="bold">VER 1.1.0</span><br> NOTAS:<br>
+                ► El algoritmo es ...<br>
+                ► Coloca minas al azar al "Contstruir" un tablero nuevo, para evitar tener que colocar las minas a mano                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Table -->
+      <div id="tableroDiv" class='tabla'>        
+        <table id="table"></table>
+        <div id="pc-status" class="smaller pc-thinking">&nbsp;</div>
+      </div>
+
+    </div>    
+  </div>
+
+  <div class="smaller"></div>
+
+  <script type="text/javascript" src="./buscaminas.js"></script>
+  
+</body>
+</html>
