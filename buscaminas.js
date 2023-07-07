@@ -372,6 +372,17 @@ function iniciar() {
   probar();
   console.log('Iniciando modo "auto-juego"');
 
+  // Set Interval delay
+  let inputLag = document.getElementById('input-lag')
+  let delay = Number(inputLag.value);
+  if (delay < 1) {
+    delay = 1;
+  } else if (delay > 2000) {
+    delay = 2000;
+  }
+  inputLag.value = delay;
+  console.log('DELAY: ', delay);
+
   // Create "PC's" buttons
   let botonesPC = [], tamano = tabla.length, id = 0;
   for (let i = 0; i < tamano; i++) {
@@ -393,20 +404,22 @@ function iniciar() {
       botonesPC[x].click();        
     }   */ 
     
-    //AQUÍ VOY: únicamente incluir las celdas que no se han examinado
+    //AQUÍ VOY: únicamente incluir las celdas que no se han examinado 
     // Creates array with cells that need to be examined
-    // Ex idCell > 0
+    // Ex idCell > 0 
     let checkThisCells = [];
     for (let i = 0; i < tamano; i++) {
       for (let j = 0; j < tamano; j++) {
-        if (Number(tablaJuego[i][j]) > 0) checkThisCells.push(obtenShot(i, j, tamano));
+        let around = cuentaAlrededor(i, j);
+        if (Number(tablaJuego[i][j]) > 0 && around[0] > 0) {
+          checkThisCells.push(obtenShot(i, j, tamano));
+        }
       }        
     }
-    console.log(JSON.stringify(checkThisCells));
-    console.log(checkThisCells.length);
+    if (tiroActual >= checkThisCells.length) tiroActual = 0;
+    //console.log(JSON.stringify(checkThisCells));
+    //console.log(checkThisCells.length);  
 
-
-    //AQUÍ VOY: Hacer algoritmo (problemas con huboAccion)
     
     if (checkThisCells.length > 0) {
       // Analiza celdas
@@ -433,7 +446,7 @@ function iniciar() {
       } else if (idCell === 1) {
         // Buscar dos celdas "1" juntas
         // Celdas "combinadas"
-        console.log('CELDA COMBINADA');
+        //console.log('CELDA COMBINADA');
       }
     } else {
       // Tiro inicial      
@@ -457,6 +470,6 @@ function iniciar() {
 
 
     if (state.status !== 0 ) clearInterval(timeOutID);
-  }, 10);
+  }, delay);
 
 }
