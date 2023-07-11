@@ -9,7 +9,7 @@ const symbols = {
 const state = {
   buildMode: true,
   status: 0,
-  message: 'Elige tamaño (3-20) y clic en "Construir"',
+  message: 'Elige tamaño (3-30) y clic en "Construir"',
   mineCount: 0
 } // 0=playing, 1=won, 2=lost
 let row, cell;
@@ -68,15 +68,16 @@ function estoyJuntoAChecked(renglon, columna) {
 
 // Count checked & flagged cells around
 function cuentaAlrededor(renglon, columna, botonesPC, action) {
-  //      unchecked flagged clicked
-  //               ↓  ↓     ↓
-  let alrededor = [0, 0];
+  //     unchecked,flagged,unchpositions,"1"positions,"2"positions
+  //               ↓  ↓   ↓   ↓   ↓
+  let alrededor = [0, 0, [], [], []];
   for (let i = renglon - 1; i <= renglon + 1; i++) {
     for (let j = columna - 1; j <= columna + 1; j++) {
       // Within boundaries
       if (i >= 0 && i < tablaJuego[0].length && j >= 0 && j < tablaJuego.length && (i !== renglon || j !== columna)) {
         if (tablaJuego[i][j] === symbols.unchecked) {
           alrededor[0]++;
+          alrededor[2].push(obtenShot(i, j, tablaJuego.length));
           // Debería hacer un click derecho, pero no sé cómo ↓ botonesPC[obtenShot(i, j, tablaJuego.length)].auxclick();
           if (action === 'flag') {
             document.getElementById(obtenShot(i, j, tablaJuego.length)).src = './img/flag.png';
@@ -90,11 +91,38 @@ function cuentaAlrededor(renglon, columna, botonesPC, action) {
           //document.getElementById(obtenShot(i, j, tablaJuego.length)).src = './img/flag.png';
         } else if (tablaJuego[i][j] === symbols.flagged) {
           alrededor[1]++;
+        } else if (tablaJuego[i][j] === '1') {
+          alrededor[3].push(obtenShot(i, j, tablaJuego.length));
+        } else if (tablaJuego[i][j] === '2') {
+          alrededor[4].push(obtenShot(i, j, tablaJuego.length));
         }
       }          
     }        
   }
   return alrededor;
+}
+
+// Obtains elements in "a" that are not in "b" and viceversa
+function subConjunto(a, b) {
+  let aa = [];
+  for (let x = 0; x < a.length; x++) {
+    let included = false;
+    for (let y = 0; y < b.length; y++) {
+      if (a[x] === b[y]) included = true;
+    }
+    if (!included) aa.push(a[x]);
+  }
+  return aa;
+}
+function subConjuntoS(a, b) {
+  if (a.length > 0 && b.length > 0) {
+    let subs = []
+    subs.push(subConjunto(a, b));
+    subs.push(subConjunto(b, a));
+    return subs;
+  } else {
+    return false;
+  }
 }
 
 function azar() {
@@ -124,7 +152,7 @@ function construye() {
   const tamanoInput = document.getElementById('input-tamano');
   let tamano = Number(tamanoInput.value);
   if (tamano < 3) tamano = 3;
-  if (tamano > 20) tamano = 20;
+  if (tamano > 30) tamano = 30;
   tamanoInput.value = tamano;
   
   // Set empty array
@@ -266,7 +294,7 @@ function playMines(e, tamano) {
     // You lost: displays mines
     showMines();
     state.status = 2;
-    document.getElementById('state').textContent = 'PERDISTE. Da clic en "Construir" para crear un juego nuevo';
+    document.getElementById('state').textContent = 'JUEGO PERDIDO. Da clic en "Construir" para crear un juego nuevo';
     document.getElementById('boton-probar').disabled = true;
     document.getElementById('boton-iniciar').disabled = true;
   } else if (tablaJuego[renglon][columna] === symbols.unchecked) {
@@ -310,7 +338,7 @@ function playMines(e, tamano) {
     if (hasWon) {
       showMines();
       state.status = 1;
-      document.getElementById('state').textContent = 'GANASTE !!!';
+      document.getElementById('state').textContent = 'JUEGO GANADO !!!';
     }
   }
   // Change image
@@ -332,9 +360,6 @@ function markMines(e, tamano) {
     document.getElementById(markThis).src = './img/unchecked.png';
   }
 }
-
-
-
 
 // Start test-game (human played game)
 function probar() {
@@ -443,17 +468,43 @@ function iniciar() {
         pcStatus.innerHTML = `Celdas seguras alrededor de (${renglon},${columna})<br>${pcStatus.innerHTML}`;
         alrededor = cuentaAlrededor(renglon, columna, botonesPC, 'unchecked');
         huboAccion = true;
-      } else if (idCell === 1) {
-        // Buscar dos celdas "1" juntas
-        // Celdas "combinadas"
-        //console.log('CELDA COMBINADA');
+      } else if (idCell === 1 && alrededor[3].length > 0) {
+        // Two or more "1" cells together
+        // Celda combinada "1" "1"
+        for (let i = 0; i < alrededor[3].length; i++) {
+          let renInt = obtenRenglon(alrededor[3][i], tamano);
+          let colInt = obtenColumna(alrededor[3][i], tamano);
+          let alrededorInt = cuentaAlrededor(renInt, colInt);
+          let subs = subConjuntoS(alrededor[2], alrededorInt[2]);
+          if (subs) {
+            if ((subs[0].length > 0 && subs[1].length === 0) || (subs[1].length > 0 && subs[0].length === 0)) {
+              //console.log(`Alrededor: ${JSON.stringify(alrededor)}, AlrededorInt: ${JSON.stringify(alrededorInt)}`);
+              if (alrededor[1] === 0 && alrededorInt[1] === 0) {
+                pcStatus.innerHTML = `<span class="blue">Celdas combinadas "1" "1" alrededor de (${renglon},${columna})</span><br>${pcStatus.innerHTML}`;
+                if (subs[0].length > 0) {
+                  console.log('dar clic en', JSON.stringify(subs[0]));              
+                  subs[0].forEach(e => botonesPC[e].click());
+                } else {
+                  console.log('dar clic en', JSON.stringify(subs[1]));
+                  subs[1].forEach(e => botonesPC[e].click());
+                }
+                huboAccion = true;
+              }              
+            }
+          }
+        }        
+      } else if (idCell === 1 && alrededor[4].length > 0) { // && alrededor hay un "2"
+        // y las unchecked de "1" son subconjunto de "2"
+        pcStatus.innerHTML = `<span class="purple">Celdas combinadas "1" "2" alrededor de (${renglon},${columna})</span><br>${pcStatus.innerHTML}`;
+
       }
     } else {
-      // Tiro inicial      
-      botonesPC[azar()].click();
+      // Tiro inicial
+      let alAzar = azar();
+      botonesPC[alAzar].click();
       huboAccion = true;
       tiroActual = -1;
-      pcStatus.innerHTML = `No hay dónde tirar. Tirando al azar<br>${pcStatus.innerHTML}`;
+      pcStatus.innerHTML = `<span class="red">Tiro inicial al azar (${obtenRenglon(alAzar, tamano)}, ${obtenColumna(alAzar, tamano)})</span><br>${pcStatus.innerHTML}`;
     }
     if (tiroActual < checkThisCells.length - 1) {
       tiroActual++;
@@ -462,8 +513,9 @@ function iniciar() {
       pcStatus.innerHTML = `Ciclo terminado<br>${pcStatus.innerHTML}`;
       if (!huboAccion) {
         // No hubo acción, tirando al azar
-        botonesPC[azar()].click();
-        pcStatus.innerHTML = `No hay dónde tirar. Tirando al azar<br>${pcStatus.innerHTML}`;
+        let alAzar = azar();
+        botonesPC[alAzar].click();
+        pcStatus.innerHTML = `<span class="red">No hay dónde tirar. Tirando al azar en (${obtenRenglon(alAzar, tamano)}, ${obtenColumna(alAzar, tamano)})</span><br>${pcStatus.innerHTML}`;
       }//**************      
       huboAccion = false;
     }    
