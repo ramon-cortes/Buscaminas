@@ -253,7 +253,7 @@ function construye() {
   });
 }
 
-function showMines() {
+function showMines(won) {
   let tamano = tabla.length;
   let index = 1000;
   for (let i = 0; i < tamano; i++) {
@@ -261,7 +261,7 @@ function showMines() {
       let thisCell = document.getElementById(index);
       thisCell.innerHTML = '';
       index++;
-      if (tabla[i][j] === symbols.mine) {
+      if (tabla[i][j] === symbols.mine && !won) {
         tablaJuego[i][j] = symbols.mine;
       }
       let deadImg = document.createElement('img');
@@ -270,10 +270,14 @@ function showMines() {
         deadImg.src = './img/checked.png';
       } else if (tablaJuego[i][j] === symbols.unchecked) {
         deadImg.src = './img/unchecked.png';
-      } else if (tablaJuego[i][j] === symbols.mine) {
+      } else if (tablaJuego[i][j] === symbols.mine && !won) {
         deadImg.src = './img/mine.png';
-      } else if (tablaJuego[i][j] === symbols.flagged) {
+      } else if (tablaJuego[i][j] === symbols.mine && won) {
+        deadImg.src = './img/flag.png';
+      } else if (tablaJuego[i][j] === symbols.flagged && !won) {
         deadImg.src = './img/x.png';
+      } else if (tablaJuego[i][j] === symbols.flagged && won) {
+        deadImg.src = './img/flag.png';
       } else {
         deadImg.src = `./img/${tablaJuego[i][j]}.png`;
       }
@@ -292,7 +296,7 @@ function playMines(e, tamano) {
   let img = document.getElementById(shot);
   if (tabla[renglon][columna] === symbols.mine) {
     // You lost: displays mines
-    showMines();
+    showMines(false);
     state.status = 2;
     document.getElementById('state').textContent = 'JUEGO PERDIDO. Da clic en "Construir" para crear un juego nuevo';
     document.getElementById('boton-probar').disabled = true;
@@ -336,7 +340,7 @@ function playMines(e, tamano) {
       }
     }
     if (hasWon) {
-      showMines();
+      showMines(true);
       state.status = 1;
       document.getElementById('state').textContent = 'JUEGO GANADO !!!';
     }
