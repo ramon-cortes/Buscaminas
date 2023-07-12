@@ -22,15 +22,16 @@ input {
   width: 60px;
 }
 
-.tabla {
+.tabla-div {
   border: none;
+  margin-left: 5px;
 }
 
-table {
+/*table {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-}
+}*/
 
 table, tr, td {
   font-family: 'consolas';
@@ -38,6 +39,14 @@ table, tr, td {
   border-collapse: collapse;
   padding: 0px;
 }
+
+#table {  
+  display: inline;
+  vertical-align: top;
+}
+
+/*#img-status {
+}*/
 
 td {
   cursor: pointer;

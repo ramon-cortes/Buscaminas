@@ -171,6 +171,7 @@ function construye() {
   document.getElementById('state').textContent = state.message;
   state.status = 0;
   document.getElementById('pc-status').innerText = ' ';
+  document.getElementById('img-status').src = './img/status-normal.png';
 
   // Reset table
   const tablaElemento = document.getElementById('table');
@@ -297,6 +298,7 @@ function playMines(e, tamano) {
   if (tabla[renglon][columna] === symbols.mine) {
     // You lost: displays mines
     showMines(false);
+    document.getElementById('img-status').src = './img/status-lost.png';
     state.status = 2;
     document.getElementById('state').textContent = 'JUEGO PERDIDO. Da clic en "Construir" para crear un juego nuevo';
     document.getElementById('boton-probar').disabled = true;
@@ -341,6 +343,7 @@ function playMines(e, tamano) {
     }
     if (hasWon) {
       showMines(true);
+      document.getElementById('img-status').src = './img/status-won.png';
       state.status = 1;
       document.getElementById('state').textContent = 'JUEGO GANADO !!!';
     }
