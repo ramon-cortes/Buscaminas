@@ -152,18 +152,20 @@ function construye() {
   const tamanoInput = document.getElementById('input-tamano');
   let tamano = Number(tamanoInput.value);
   if (tamano < 3) tamano = 3;
-  if (tamano > 30) tamano = 30;
+  if (tamano > 40) tamano = 40;
   tamanoInput.value = tamano;
   
   // Set empty array
   tabla = [];
-  for (let i = 0; i < tamano; i++) {
+  // Init mine table
+  tabla = initThisTable(tamano);
+  /*for (let i = 0; i < tamano; i++) {
     let arregloLineal = [];
     for (let j = 0; j < tamano; j++) {
       arregloLineal.push(symbols.unchecked);      
     }
     tabla.push(arregloLineal);
-  }
+  }*/
 
   // Update state
   state.buildMode = false;
@@ -175,10 +177,7 @@ function construye() {
 
   // Reset table
   const tablaElemento = document.getElementById('table');
-  tablaElemento.innerHTML = '';
-
-  // Init mine table
-  tabla = initThisTable(tamano);  
+  tablaElemento.innerHTML = '';    
   
   // Insert rows and cells into table
   let index = 0;
@@ -186,7 +185,7 @@ function construye() {
     row = tablaElemento.insertRow();
     for (let j = 0; j < tamano; j++) {
       cell = row.insertCell();
-      cell.id = index + 1000;
+      cell.id = index + 10000;
       let img = document.createElement('img');
       img.id = index;
       img.className = 'img-tablero';
@@ -209,6 +208,9 @@ function construye() {
     cellTodas.push(document.getElementById(i));
     // Place or remove mine
     cellTodas[i].addEventListener('click', () => {
+      /*if (i > 998) {
+        console.log('Últimas celdas', i);
+      }*/
       let renglon = obtenRenglon(i, tamano);
       let columna = obtenColumna(i, tamano);
       let img = document.getElementById(i);
@@ -256,7 +258,7 @@ function construye() {
 
 function showMines(won) {
   let tamano = tabla.length;
-  let index = 1000;
+  let index = 10000;
   for (let i = 0; i < tamano; i++) {
     for (let j = 0; j < tamano; j++) {
       let thisCell = document.getElementById(index);
@@ -348,8 +350,7 @@ function playMines(e, tamano) {
       document.getElementById('state').textContent = 'JUEGO GANADO !!!';
     }
   }
-  // Change image
-  //console.log(shot + 1000);
+  
   
 }
 
@@ -380,13 +381,13 @@ function probar() {
 
   // Clear board images
   let imgTodas = [];  
-  for (let i = 1000; i < tamano**2 + 1000; i++) {
-    let renglon = obtenRenglon(i - 1000, tamano);
-    let columna = obtenColumna(i - 1000, tamano);
+  for (let i = 10000; i < tamano**2 + 10000; i++) {
+    let renglon = obtenRenglon(i - 10000, tamano);
+    let columna = obtenColumna(i - 10000, tamano);
     imgTodas.push(document.getElementById(i));
-    imgTodas[i - 1000].innerHTML = '';
+    imgTodas[i - 10000].innerHTML = '';
     let img = document.createElement('img');
-    img.id = i - 1000;
+    img.id = i - 10000;
     img.className = 'img-tablero';
     let cell = document.getElementById(i);
     cell.appendChild(img);
